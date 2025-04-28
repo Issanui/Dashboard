@@ -5,7 +5,7 @@ import calendar
 import streamlit_highcharts as hct
 from utils import load_data_app1, save_data_app1, apply_custom_css
 
-# Apply custom CSS
+# Appliquer le CSS personnalisé
 apply_custom_css()
 
 # Styled background
@@ -98,8 +98,8 @@ if not df_app1.empty:
 
     # --- Prepare data
     df_app1["Year"] = df_app1["Sch dep dt with time"].dt.year
-    df_app1["Month"] = df_app1["Sch dep dt with time"].dt.month.astype("Int64")
-    df_app1["Year-Month"] = df_app1["Year"].astype(str) + "-" + df_app1["Month"].apply(lambda x: f"{x:02d}")
+    df_app1["Month"] = pd.to_numeric(df_app1["Sch dep dt with time"].dt.month, errors="coerce").fillna(0).astype(int)
+    df_app1["Year-Month"] = df_app1["Year"].astype(str) + "-" + df_app1["Month"].apply(lambda x: f"{x:02d}" if x > 0 else "00")
     df_app1["Year-Month"] = pd.Categorical(df_app1["Year-Month"], sorted(df_app1["Year-Month"].unique()))
 
     agg = df_app1.groupby(["Route", "Year-Month"], as_index=False)["COS"].mean()
